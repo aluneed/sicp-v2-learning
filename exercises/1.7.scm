@@ -85,4 +85,15 @@ g^2-x=2sqrt(x)*t+t^2~=2sqrt(x)*t
 违反直觉的是, 输入值更大的情况下,
 可能会因为精度丢失导致2sqrt(x)*t被整个丢失, 从而能够正常收敛
 
+总得来说, 无法收敛是因为某些情况下精度丢失, 恰好无法迭代又不满足精度校验条件, 而并非网上一些答案中所说的单纯的因为精度丢失
+
+找到了一个比较完善的参考
+https://codology.net/post/sicp-solution-exercise-1-7/
+重点在于gap, 以及if we are lucky
+另一个比较详细的解答
+http://community.schemewiki.org/?sicp-ex-1.7
+
+从直觉上来看, 精度丢失的情况下
+能够收敛的值的指数可能是周期性变化的, 而与值的大小无关
+
 |#
