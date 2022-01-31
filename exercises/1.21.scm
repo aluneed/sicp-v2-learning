@@ -8,7 +8,7 @@
 
 (define (iterator n x) (
     cond
-        ((>= (* n n) x) x)
+        ((> (* n n) x) x)
         ((= (remainder x n) 0) n)
         (else (iterator (+ n 2) x))
 ))
