@@ -13,6 +13,6 @@
         (else (iterator (+ n 2) x))
 ))
 
-(smallestDivisor 199)
-(smallestDivisor 1999)
-(smallestDivisor 19999)
+(smallestDivisor 199)  ;;199
+(smallestDivisor 1999)  ;;1999
+(smallestDivisor 19999)  ;;7
