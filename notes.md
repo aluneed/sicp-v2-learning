@@ -25,4 +25,8 @@
     (exp x) e^x
     (log 2.718281828) ln2.718281828
     (log 100 10) ln100/ln10 ? log10 100
+    (random n) 0~(n-1)的随机自然数  expected: (or/c (integer-in 1 4294967087) pseudo-random-generator?)
+    ((define ) () () ())  有点像宏? 定义一系列过程
+    (display value) 打印value
+    (newline) 换行, 如果换行之后没有后续的display, 就无法打印所求出的值
 ```
