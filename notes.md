@@ -29,4 +29,5 @@
     ((define ) () () ())  有点像宏? 定义一系列过程
     (display value) 打印value
     (newline) 换行, 如果换行之后没有后续的display, 就无法打印所求出的值
+    (gcd a b) 求a,b的最大公因数, 若结果为1则ab互质
 ```

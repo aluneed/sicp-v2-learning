@@ -1,4 +1,4 @@
 #lang scheme
 
-;;; exercise 1.2 ;;;
+;;; exercise 1.3 ;;;
 
