@@ -67,6 +67,7 @@
 ### 3.3.3 表格的表示 Representing Tables
 ### 3.3.4 数字电路的模拟器 A Simulator for Digital Circuits
 ### 3.3.5 约束的传播 Propagation of Constraints
+checked exception和null检查算么?
 ## 3.4 并发: 时间至关重要 Concurrency: Time Is of the Essence 并发: 时间是一个本质问题
 ### 3.4.1 并发系统中时间的性质 The Nature of Time in Concurrent Systems
 ### 3.4.2 控制并发的机制 Mechanisms for Controlling Concurrency
