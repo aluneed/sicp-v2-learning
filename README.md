@@ -1,4 +1,4 @@
-# sicp-v2-notes
+# sicp-v2-learning
 
 ## env
 
