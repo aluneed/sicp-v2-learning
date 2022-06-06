@@ -42,7 +42,7 @@
 
 ;;p1-p2-p3-p4-p1, 相对边
 (define (makeRectangle1 p1 p2 p3 p4) (
-    let ((s1 (makeSegment p1 p2)) (s2 (makeSegment p4 p3)))
+    let ((s1 (makeSegment p1 p2)) (s2 (makeSegment p3 p4)))
         cons s1 s2
 ))
 
@@ -52,11 +52,55 @@
         (cons s1 s2)
 ))
 
-(define (getValue rectangle) (
-    let (
-            (p1 (car (car rectangle)))
-            (p2 (cdr (car rectangle)))
-            (p3 (car (car rectangle)))
-            )
-        ()
+(define (product vector1 vector2) (
+    (- (* (car vector1) (cdr vector2)) (* (cdr vector1) (car vector2)))
 ))
+
+(define (vectorOf p1 p2) (
+    cons 
+        (- (car p2) (car p1))
+        (- (cdr p2) (cdr p1))
+))
+
+(define (lengthOf p1 p2) (
+    sqrt (
+        +
+        (expt (- (car p2) (car p1)) 2)
+        (expt (- (car p2) (car p1)) 2)
+    )
+))
+
+(define (areaOf rectangle)
+    (let (
+        (p1 (car (car rectangle)))
+        (p2 (cdr (car rectangle)))
+        (p3 (cdr (cdr rectangle)))
+    )
+        (product
+            (vectorOf p1 p2)
+            (vectorOf p1 p3)
+        )
+    )
+)
+
+(define (perimeterOf rectangle)
+    (let (
+        (p1 (car (car rectangle)))
+        (p2 (cdr (car rectangle)))
+        (p3 (cdr (cdr rectangle)))
+    )
+    (* 2 (+ (lengthOf p1 p2) (+ (lengthOf p1 p3))))
+    )
+)
+
+(define p1 (cons 0 0))
+(define p2 (cons 5 0))
+(define p3 (cons 0 3))
+(define p4 (cons 5 3))
+
+(define rectangle (makeRectangle1 p1 p2 p3 p4))
+
+rectangle
+
+(areaOf rectangle)
+(perimeterOf rectangle)

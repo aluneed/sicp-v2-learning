@@ -10,7 +10,7 @@
 
 (define (makeSegment startPoint endPoint) (
     cons startPoint endPoint
-) )
+))
 (define (startSegment segment) (car segment))
 (define (endSegment segment) (cdr segment))
 

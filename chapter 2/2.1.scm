@@ -11,7 +11,7 @@
 )
 
 (define (makeRat n d) 
-    (let ((gcdResult (gcd n d))) (
+    (let ((gcdResult (gcd n d))) (  ;;(gcd a b) is embedded
         if (< d 0)
             (cons (- (/ n gcdResult)) (- (/ d gcdResult)))
             (cons (/ n gcdResult) (/ d gcdResult))
@@ -20,3 +20,6 @@
 
 (printRat (makeRat 3 6))
 (printRat (makeRat 3 -6))
+(printRat (makeRat -3 6))
+(printRat (makeRat -3 -6))
+(print (printRat (makeRat 3 -6)))
