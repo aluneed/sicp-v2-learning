@@ -43,7 +43,7 @@
 ;;p1-p2-p3-p4-p1, 相对边
 (define (makeRectangle1 p1 p2 p3 p4) (
     let ((s1 (makeSegment p1 p2)) (s2 (makeSegment p3 p4)))
-        cons s1 s2
+        (cons s1 s2)
 ))
 
 ;;p1-p2-p3-p4-p1, 相邻边
@@ -53,7 +53,7 @@
 ))
 
 (define (product vector1 vector2) (
-    (- (* (car vector1) (cdr vector2)) (* (cdr vector1) (car vector2)))
+    - (* (car vector1) (cdr vector2)) (* (cdr vector1) (car vector2))
 ))
 
 (define (vectorOf p1 p2) (
