@@ -612,6 +612,57 @@ debug了一下午, 不知道为什么数据会出现问题, 回家之后才找�
 我采用相邻边和对边两种方法有点投机取巧了  
 
 ### 2.1.3 数据意味着什么 What Is Meant by Data?
+
+```scheme
+(define (cons x y) 
+    (lambda (flag) 
+        (cond 
+            ((= flag 0) x)
+            ((= flag 1) y)
+            (else (error "illegal argument"))
+        )
+    )
+)
+
+(define (car t) (t 0))
+(define (cdr t) (t 1))
+
+(define a (cons 1 2))
+(car a)
+(cdr a)
+((cons 1 2) 0)
+((cons 1 2) 1)
+```
+
+可以看出, 过程同样可以实现数据抽象  
+
+这其实很类似于之前出现过的一种写法(练习1.37)  
+通过改变函数本身的加数来达到递增效果(下面的inc2中, 可以直接把x的输入值作为输入函数的初始返回值)  
+```scheme
+(define (inc1 x n)
+    (if (> n 0)
+        (inc1 (+ x 1) (- n 1))
+        x
+    )
+)
+(inc1 0 5)
+
+(define (inc2 x n func)
+    (if (> n 0)
+        (inc2 x (- n 1) (lambda (t) (+ (func t) 1)))
+        (func x)
+    )
+)
+(inc2 0 5 (lambda (x) 0))
+```
+
+练习2.4中的代码更加简洁, 而且具有对称性, 语义初看比较晦涩, 但实际比较好解释  
+
+过程可以作为一种对象(客体)去操作, 自动地提供了一种表示符合数据的手段  
+
+数据的过程性将扮演核心角色  
+相关程序设计风格: 消息传递  
+
 ### 2.1.4 扩展练习: 区间算术 Extended Exercise: Interval Arithmetic
 ## 2.2 层次性数据和闭包性质 Hierarchical Data and the Closure Property 分层数据
 ### 2.2.1 序列的表示 Representing Sequences
