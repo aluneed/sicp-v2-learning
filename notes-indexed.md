@@ -664,6 +664,12 @@ debug了一下午, 不知道为什么数据会出现问题, 回家之后才找�
 相关程序设计风格: 消息传递  
 
 ### 2.1.4 扩展练习: 区间算术 Extended Exercise: Interval Arithmetic
+
+坏起来了, 看着就很麻烦的问题
+
+Alyssa P. Hacker和Ben Bitdiddle 都不是善茬  
+
+
 ## 2.2 层次性数据和闭包性质 Hierarchical Data and the Closure Property 分层数据
 ### 2.2.1 序列的表示 Representing Sequences
 ### 2.2.2 层次性结构 Hierarchical Structures
