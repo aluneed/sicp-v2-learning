@@ -5,19 +5,32 @@
 )
 
 (define (center i)
-    (/ (+ (lower-bound i) (upper-bound i)) 2)
+    (/ (+ (lower-bound i) (upper-bound i)) 2.0)
 )
 
 (define (width i)
-    (/ (- (upper-bound i) (lower-bound i)) 2)
+    (/ (- (upper-bound i) (lower-bound i)) 2.0)
 )
 
 ;;; exercise 2.12 ;;;
 
 (define (make-center-percent c p)
-    (make-center-width c (* c p))
+    (make-center-width c (/ (* c p) 100.0))
 )
 
 (define (percent i)
-    (* (/ (width i) (center i)) 100)
+    (* (/ (width i) (center i)) 100.0)
 )
+
+(define t (make-center-percent 100 5.8))
+
+(center t)
+(width t)
+
+#|
+100.0
+5.799999999999997
+寄了, 精度丢失了  
+加减法都可能造成  
+(+ 105.8 94.1) -> 199.89999999999998
+|#
