@@ -1,5 +1,14 @@
 #lang scheme
 
+(define (make-interval a b) (cons a b))
+
+(define (lower-bound t)
+    (min (car t) (cdr t))
+)
+(define (upper-bound t)
+    (max (car t) (cdr t))
+)
+
 (define (mul-interval x y)
     (let (
         (p1 (* (lower-bound x) (lower-bound y)))
