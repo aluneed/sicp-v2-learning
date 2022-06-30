@@ -7,10 +7,10 @@
 (car '(1))  ;;1
 (cdr '(1))  ;;()
 
-(define (last-pair list)  ;;好想用驼峰命名啊
-    (if (null? (cdr list))
-        list
-        (last-pair (cdr list))
+(define (last-pair data-list)  ;;好想用驼峰命名啊
+    (if (null? (cdr data-list))
+        data-list
+        (last-pair (cdr data-list))
     )
 )
 
