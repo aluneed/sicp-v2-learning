@@ -1,6 +1,7 @@
 #lang scheme
 
 ;;; exercise 2.6 ;;;
+;;Church计数
 
 ;;一眼看上去就感觉可能和数字逻辑有关
 
