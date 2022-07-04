@@ -749,6 +749,13 @@ scheme中`nil`是一个普通的名字, 被用作一个变量来表示表尾(lis
 `true`也是一个表示真值的普通变量  
 scheme采用`()`来表示空表  
 
+cons的实际过程是将第一个参数放进一个元组的左值, 再将元组的右值设置为第二个参数的引用  
+当第一个参数是元组时, 不会有任何影响(此时list的结构不变)  
+`(cons '(0 1) '(2 3))`也同样能得到`((0 1) 2 3)`的结果, 只是第一个元素变成了元组, 整体仍然是list  
+当第二个参数不是list时, 无论如何都无法构成新的list  
+因为cons的结果无论如何都会因为第二个非list参数作为右值, 而必然不是list  
+参考练习2.22
+
 #### 表操作 
 
 `list-ref`仍然是递归定义的
@@ -761,12 +768,87 @@ scheme采用`()`来表示空表
 
 #### 对表的映射
 
+```scheme
+(define nil '())
+(define (scale-list items factor)
+    (if (null? items)
+        nil
+        (cons
+            (* (car items) factor)
+            (scale-list (cdr items) factor)
+        )
+    )
+)
+(scale-list (list 1 2 3 4 5) 10)
+```
+
 `scale-list`的代码和前面几个练习中的代码如出一辙, 都是递归地去访问list中的每个元素, 然后在逐层返回时通过`cons`进行组装  
 这看起来是一种scheme中访问list的较为通常的策略  
 
+```scheme
+(define (map proc items)
+    (if (null? items)
+        '()
+        (cons (proc (car items)) (map proc (cdr items)))
+    )
+)
+(map (lambda (i) (* i i)) '(1 2 3 4 5))
+```
 
+```java
+public static void main(String[] args) {
+    List<Integer> integerList = new ArrayList<>();
+    integerList.add(1);
+    integerList.add(2);
+    integerList.add(3);
+    integerList.add(4);
+    integerList.add(5);
+    List<Integer> squareResult = map((i) -> i * i, integerList);
+    System.out.println(squareResult);
+}
+public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
+    if (list.isEmpty()) {
+        return new ArrayList<U>();
+    } else {
+        /** 有副作用的方法 */
+//        list.remove(lastElement);
+//        List<U> resultList = map(function, list);
 
+        /** 队尾插入, 和scheme略有区别 */
+//        T lastElement = list.get(list.size() - 1);
+//        List<U> resultList = map(function, list.subList(0, list.size() - 1));
+//        resultList.add(function.apply(lastElement));
 
+        /** 采用ArrayList在队首插入可能面临性能问题 */
+        T lastElement = list.get(0);
+        List<U> resultList = map(function, list.subList(1, list.size()));
+        resultList.add(0, function.apply(lastElement));
+
+        return resultList;
+    }
+}
+```
+
+这是一段等价的java代码  
+区别在于, java中能够在List的末尾进行操作  
+而scheme中的list看上去更像是一种只有头指针的链表, 队尾操作需要遍历list  
+
+如果从队尾开始进行递归处理, 从队首开始处理  
+并且如果能够丢弃这个递归过程中的后续continuation  
+那么就实现了list map的部分求值  
+
+`map`的重要性不仅在于它代表一种公共模式(一种较为通常的策略)  
+还在于它建立了一种处理list的高层抽象  
+
+在`scale-list`的最初定义中, 人的注意力很容易集中在对元素的逐个处理上(即`Function<T, U>`的细节上)  
+`map`则强调list到list的一种变换, 变换方式的细节则被隐藏在functino中, 无需关注  
+
+两种形式的定义不影响实际执行方式, 而影响对这个过程的看法(即对语义的理解)  
+
+`map`建立了一层抽象屏障, 隔离了list中元素变换过程的实现与如何提取list中元素再组合变换结果的细节分离开  
+
+这使得我们有可能再保持从序列到序列的变换操作框架的同时, 改变序列实现的底层细节  
+有点没看明白这句
 
 ### 2.2.2 层次性结构 Hierarchical Structures
 ### 2.2.3 序列作为传统常见接口 Sequences as Conventional Interfaces 序列作为一种约定的界面
