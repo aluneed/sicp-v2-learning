@@ -3,7 +3,7 @@
 ;;; exercise 2.18 ;;;
 
 (define (reverse data-list)
-    (if (null? (car data-list))
+    (if (null? data-list)
         data-list
         (append (reverse (cdr data-list)) (list (car data-list)))
     )

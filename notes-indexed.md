@@ -13,6 +13,34 @@
 ### 1.1.4 符合过程 Compound Procedures
 ### 1.1.5 过程应用的代换模型 The Substitution Model for Procedure Application
 ### 1.1.6 条件表达式和谓词 Conditional Expressions and Predicates
+
+`cond`  
+如果无法找到值为真的谓词表达式`<p>`, 那么`cond`的值就没有定义  
+否则返回第一个谓词表达式`<p>`为真时对应的序列表达式`<e>`  
+
+`if`
+必定对两个分支之一进行求值, 因此一定会有返回值  
+
+这两者的差异在语义上是说得通的  
+因为`if`表达式的两个分支组成了可能情况的全集  
+而`cond`的所有表达式表示的分支并不一定能组成全集(也可能组成全集的情况下还有重复的情况, 但由于先后顺序而忽略后续的分支)  
+
+
+`cond`谓词逻辑后的序列表达式可以是多个过程的组合
+```scheme
+(define (test x)
+  (cond
+    ((= x 1)
+      (display 1)
+      (newline)
+      -1
+    )
+  )
+)
+(+ (test 1) 1)  ;;0
+(test 2)  ;;show nothing
+```
+
 ### 1.1.7 实例: 采用牛顿法求平方根 Example: Square Roots by Newton's Method
 ### 1.1.8 过程作为黑箱抽象 Procedures as Black-Box Abstractions
 ## 1.2 过程与它们所产生的计算 Procedures and the Processes They Generate
@@ -851,6 +879,57 @@ public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
 有点没看明白这句
 
 ### 2.2.2 层次性结构 Hierarchical Structures
+
+推广到序列元素本身也是序列的情况
+
+相比之前对list的递归处理, 树的递归其实只是为每个节点的子list加上了遍历  
+
+需要注意的是  
+`'('(1 2) '(3 4))`的写法作为参数传递后会变成  
+`((quote (1 2)) (quote (3 4)))`  
+对这个值应用`car`的结果是  
+`'(1 2)`  
+正确的写法是  
+`'((1 2) (3 4))`  
+只需要外部有一个`'`就行了  
+```scheme
+(list (list 1 2) (list 3 4))
+'((1 2) (3 4))
+```
+
+这两种写法是等价的 
+
+```scheme
+(define (length items)
+    (if (null? items)
+        0
+        (+ 1 (length (cdr items)))
+    )
+)
+
+#|(define (count-leaves branches)
+    (if (null? branches)
+        1
+        (+ (count-leaves (car branches)) (count-leaves (cdr branches)))
+    )
+)|#
+
+(define (count-leaves branches)
+    (cond
+        ((null? branches) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves (car branches)) (count-leaves (cdr branches))))
+    )
+)
+(count-leaves '( (1 2) (3 4) ((5 6) 7) ((8 9) (10 11))))
+```
+
+注释内的代码问题在于, `car`和`cdr`操作都是应用于pair或list的  
+当取到叶子节点时会尝试应用于数字, 于是报错  
+这种情况下难以处理类型问题, 值类型也没有单独的容器来容纳  
+
+因此采用`pair?`来进行判断
+
 ### 2.2.3 序列作为传统常见接口 Sequences as Conventional Interfaces 序列作为一种约定的界面
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
 ## 2.3 符号数据 Symbolic Data
