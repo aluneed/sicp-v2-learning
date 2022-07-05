@@ -930,6 +930,12 @@ public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
 
 因此采用`pair?`来进行判断
 
+#### 对树的映射
+
+示例代码中  
+第一种写法是对树做遍历  
+第二种写法是利用了序列遍历的map, 然后通过构造的lambda对每个子树进行处理  
+
 ### 2.2.3 序列作为传统常见接口 Sequences as Conventional Interfaces 序列作为一种约定的界面
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
 ## 2.3 符号数据 Symbolic Data
