@@ -12,4 +12,4 @@
 (for-each (lambda (x) (newline) (display x)) '(57 321 88))
 
 ;;试了老半天if最后发现行不通  
-;;cond不需要返回值
+;;cond不需要返回值, 参考章节1.1.6

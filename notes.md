@@ -36,4 +36,6 @@
     (gcd a b) 求a,b的最大公因数, 若结果为1则ab互质
     (abs x)
     (round x) 向下取整
+
+    (pair? x) 判断是否为pair
 ```
