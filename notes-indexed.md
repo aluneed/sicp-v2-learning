@@ -937,6 +937,24 @@ public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
 第二种写法是利用了序列遍历的map, 然后通过构造的lambda对每个子树进行处理  
 
 ### 2.2.3 序列作为传统常见接口 Sequences as Conventional Interfaces 序列作为一种约定的界面
+
+命令式语言通常将函数/方法, 即过程作为接口  
+而这里似乎倾向于将数据结构作为接口?  
+
+"信号处理工程师们可能会发现, 这种过程可以很自然地用流过一些级联地处理步骤地信号地方式描述, 其中的每个处理步骤实现程序方案中的一个部分"  
+
+其实就是stream或者pipeline  
+难点其实在于reduce或者带有accumulate累积的, 依赖集合中其他元素的计算  
+
+#### 序列操作
+
+这里介绍了一系列类似stream的实现(但并没有提供stream接口, 而是显式手动地进行括号嵌套组合)  
+
+将程序表示为一些针对序列的操作, 能帮助我们得到模块化的程序设计  
+也就是得到由一些比较独立的片段的组合构成的设计  
+
+
+
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
 ## 2.3 符号数据 Symbolic Data
 ### 2.3.1 引号 Quotation
