@@ -953,7 +953,9 @@ public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
 将程序表示为一些针对序列的操作, 能帮助我们得到模块化的程序设计  
 也就是得到由一些比较独立的片段的组合构成的设计  
 
-
+注释81中提到了Lisp将list表作为表述有序集合的一种标准媒介(容器)  
+并使它们可以通过高阶操作来处理  
+APL(Array Programming Language?)中所有的数据都是数组, 也是一种类似的选择  
 
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
 ## 2.3 符号数据 Symbolic Data
