@@ -957,6 +957,18 @@ public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
 并使它们可以通过高阶操作来处理  
 APL(Array Programming Language?)中所有的数据都是数组, 也是一种类似的选择  
 
+#### 练习2.36
+
+无法存储或传递元素在集合中索引信息时的策略  
+
+需要传递元素在集合中的位置信息时, 如果受到限制而无法传递信息  
+可以考虑在使用这个元素之后从集合中去除  
+然后在处理集合的代码中总是取首或尾元素进行处理, 处理完之后再去除  
+如此往复  
+这样无需使用位置信息即可实现集合遍历  
+
+练习2.36的难点是需要对所有的子list都这样做, 然后将弹出元素后的子list构造为一个新的list作为递归的参数  
+
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
 ## 2.3 符号数据 Symbolic Data
 ### 2.3.1 引号 Quotation
