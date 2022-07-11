@@ -38,4 +38,5 @@
     (round x) 向下取整
 
     (pair? x) 判断是否为pair
+    (string-append s1 s2 ...) 拼接字串
 ```
