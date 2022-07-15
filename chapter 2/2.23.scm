@@ -5,8 +5,9 @@
 (define (for-each consumer items)
     (cond 
         ((not (null? items))
-        (consumer (car items))
-        (for-each consumer (cdr items)))
+            (consumer (car items))
+            (for-each consumer (cdr items))
+        )
     )
 )
 (for-each (lambda (x) (newline) (display x)) '(57 321 88))
