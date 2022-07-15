@@ -957,6 +957,9 @@ public static <T, U> List<U> map(Function<T, U> function, List<T> list) {
 并使它们可以通过高阶操作来处理  
 APL(Array Programming Language?)中所有的数据都是数组, 也是一种类似的选择  
 
+突然很好奇, 这种一步步对list进行处理的操作, 是不是每次操作都遍历list, 速度会不会下降?  
+还是说无论写法, 这种遍历都是必要的?  
+
 #### 练习2.36
 
 无法存储或传递元素在集合中索引信息时的策略  
@@ -984,6 +987,43 @@ https://zh.wikipedia.org/zh-cn/结合律
 考虑前缀表达式操作op
 (op a b c) = ((op a b) op c) = (op a (op b c))  
 这种特殊情况
+
+#### 嵌套映射  这一小节中很多都是组合问题  
+
+这里定义了`flatmap`  
+```scheme
+(define (flatmap func sequence)
+    (accumulate append '() (map func sequence))
+)
+;;测试示例
+(define (accumulate accumulator initial sequence)
+    (if (null? sequence)
+        initial
+        (accumulator
+            (car sequence)
+            (accumulate accumulator initial (cdr sequence))
+        )
+    )
+)
+(define seq1 '((1 2 3) (4 5 6)(7 8 9)))
+(flatmap (lambda (x) x) seq1)  ;;(1 2 3 4 5 6 7 8 9)
+(define seq2 '((1 2 3) (4 5 6)(7 (8 9))))
+(flatmap (lambda (x) x) seq2)  ;;(1 2 3 4 5 6 7 (8 9))
+```
+
+`flatmap`无法做到递归地让树形结构扁平化  
+java中也是如此  
+```java
+Stream<Stream<Stream<String>>> stream = Stream.of(Stream.of(Arrays.asList("test", "hello", "world").stream()));
+        stream.flatMap(e -> e)
+                .peek(e -> System.out.println(e))
+                .flatMap(e -> e)
+                .forEach(e -> System.out.println(e));
+```
+
+这里枚举集合的问题在练习2.32幂集相关问题中也是类似的
+
+
 
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
 ## 2.3 符号数据 Symbolic Data
