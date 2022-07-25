@@ -25,7 +25,7 @@
     (define (queenColumns k)
         (if (= k 0)
             (list emptyBoard)  ;;空的格局集合
-            (filter 
+            (filter  ;;自带函数 
                 (lambda (positions)
                     (safe? k positions)  ;;确保新加入的第k列符合行列对角线规则  
                 )
@@ -48,7 +48,7 @@
 
 ;;注意到题目和代码中的`(enumerateInterval 1 boardSize)`, 可以看出这种遍历方式是逐行新增的, 而非解决k-1皇后问题再进行组合  
 
-(define emptyBoard '(() () () () ...))
+(define emptyBoard '())
 
 (define (adjoinPosition newRow k restOfQueens)  ;;给已知的k-1布局集合中的每个元素都加上新的列 restOfQueens {matrix1, matrix2, ...}
     (map
@@ -89,27 +89,53 @@
 ;;(if (= k 1))情况直接返回#t
 
 (define (safe? k positions)
-    (let (rowIndex (check k 0 positions))
-        (if (rowIndex)  ;;数值类型会被判定为#t
-            ()
+    (let ((rowIndex (checkRow k 0 positions)))
+        (if rowIndex  ;;数值类型会被判定为#t
+            (checkDiagonal k rowIndex positions)
             #f
         )
     )
 )
 
-(define (checkUp k rowIndex layout)
-    
+(define (checkDiagonal columnIndex rowIndex layout)
+    (and (checkDiagonal-1 columnIndex rowIndex layout) (checkDiagonal-2 columnIndex rowIndex layout))
+)
+(define (checkDiagonal-1 columnIndex rowIndex layout)
+    (cond 
+        ((= 1 (listGet (listGet layout rowIndex) columnIndex))
+            #f
+        )
+        ((or (< columnIndex 0) (< rowIndex 0))
+            #t
+        )
+        (else 
+            (checkDiagonal-1 (- columnIndex 1) (- rowIndex 1) layout)
+        )
+    )
+)
+(define (checkDiagonal-2 columnIndex rowIndex layout)
+    (cond 
+        ((= 1 (listGet (listGet layout rowIndex) columnIndex))
+            #f
+        )
+        ((or (< columnIndex 0) (>= rowIndex (length layout)))
+            #t
+        )
+        (else 
+            (checkDiagonal-1 (- columnIndex 1) (+ rowIndex 1) layout)
+        )
+    )
 )
 
-(define (check k row layout)
+(define (checkRow columnIndex rowIndex layout)
     (cond
         ((not (null? layout))
-            (if (= (listGet (car layout) (- k 1)) 1)  ;;列k的行row处为1
-                (if (= (accumulate + (car layout)) 1)  ;;如果列中和为1
-                    row
+            (if (= (listGet (car layout) (- columnIndex 1)) 1)  ;;列cloumnIndex的行rowIndex处为1
+                (if (= (accumulate + 0 (car layout)) 1)  ;;如果列中和为1
+                    rowIndex
                     #f
                 )
-                (check k (+ row 1) (cdr layout))
+                (checkRow columnIndex (+ rowIndex 1) (cdr layout))
             )
         )
         (else #f)
@@ -132,3 +158,5 @@
 ;;没有类型系统时, 语义可读性真的很弱, 不得不用注释去标记数据的结构  
 ;;闭包性质确实能使得一种结构就能应对很多问题, 但在语义上非常难以理解  
 ;;在小范围的代码处理上也没有过程式语言方便  
+
+(queens 8)
