@@ -23,6 +23,8 @@
     (accumulate append '() (map func sequence))
 )
 
+(define emptyBoard '(() () () () () () () ()))
+
 (define (queens boardSize)
     (define (queenColumns k)
         (if (= k 0)
@@ -48,8 +50,8 @@
     (queenColumns boardSize)
 )
 
-(define (safe? columnIndex matrix)
-    (let ((rowIndex (checkRow 0 columnIndex matrix)))
+(define (safe? k matrix)  ;;k不是columnIndex
+    (let ((columnIndex (- k 1))(rowIndex (checkRow 0 (- k 1) matrix)))
         (if rowIndex
             (and
                 (checkDiagonalUp (- rowIndex 1) (- columnIndex 1) matrix) 
@@ -107,14 +109,12 @@
 )
 ;;  (getByIndex '(0 1 2 3 4 5) 3)
 
-
-
-;;rowNumber=(rowIndex+1)-加入的行号, n-n皇后, matrix-已有的layout矩阵
+;;rowNumber=(rowIndex+1)-加入的行号, n-列号 没用, matrix-已有的layout矩阵
 (define (adjoinPosition rowNumber n matrix)
     (map
         append
         matrix
-        (buildVector rowNumber n)
+        (buildVector rowNumber (length matrix))
     )
 )
 (define (buildVector k n)
@@ -126,8 +126,5 @@
     )
     (iter k n '())
 )
-;;(buildVector 1 8)
-;;(define mat '((1 0) (0 0) (0 1) (0 0) (0 0) (0 0) (0 0) (0 0)))
-;;(adjoinPosition 2 8 mat)
-;;(define mat '())
 
+(queens 8)
