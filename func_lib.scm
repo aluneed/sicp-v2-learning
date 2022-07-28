@@ -20,3 +20,5 @@
         (listGet (cdr items) (- index 1))
     )
 )
+
+(define (range ))
