@@ -1023,11 +1023,129 @@ Stream<Stream<Stream<String>>> stream = Stream.of(Stream.of(Arrays.asList("test"
 
 这里枚举集合的问题在练习2.32幂集相关问题中也是类似的
 
-
-
 ### 2.2.4 实例: 一个图形语言 Example: A Picture Language
+
+这一小节大概是在讲如何设计一种dsl?  
+
+这里引入了一个新的概念: "模式(pattern)"  
+
+通过过程来表示元素代表着这样一种意义:  
+所有的状态都可以看做是初始状态经过一系列过程后的结果  
+因此状态实际上可以由初始(状态)值和过程来描述  
+
+在代数中, 我们经常给出过程方程, 但不对结果值进行求解, 而是按照形式主义的代数运算规则对过程进行简化和规约  
+
+描述语言的重点: 语言的基本原语, 组合手段, 抽象手段  
+(以java来说, 抽象手段是类, 组合手段则是类的extends/implements, 或者单纯作为成员变量, 基本原语不知道说的是不是first class object或者别的什么东西)  
+
+示例中给出的painter以及相关运算的闭包性质其实类似于各种集合容器, 以及stream和monad  
+
+在scheme中, 组合的方式就是采用普通的scheme过程(以list为例, 可以由cons进行组合)  
+
+`right-split`和`corner-split`的递归模式是这样的:  
+在`let`中递归调用, 构造出`smaller`, 然后再将`smaller`进行拼接  
+在进行第一次拼接之前, 会一直递归调用进行右分裂, 直到通过n=0时开始回溯递归过程  
+
+`square-of-four`是一个高阶函数, 接受4个函数分别作为原有的`painter`向四个角进行变换的映射  
+
+关于2.45  
+找了个通过lambda实现递归调用的方法  
+https://stackoverflow.com/questions/7719004/in-scheme-how-do-you-use-lambda-to-create-a-recursive-function  
+
+```scheme
+(((lambda (x) (x x))
+    (lambda (fact-gen)
+        (lambda (n)
+            (if (zero? n)
+                1
+                (* n ((fact-gen fact-gen) (sub1 n))
+                )
+            )
+        )
+    )
+)
+5
+)
+```
+`(lambda (x) (x x))`作用于第二个lambda函数后, 使其进入自调用的递归过程  
+第二个lambda函数则提供并维持了一个能够一直传递函数`fact-gen`的环境  
+而`(fact-gen fact-gen)`自调用则可以产生需要进行递归调用的函数  
+
+//todo
+
 ## 2.3 符号数据 Symbolic Data
+
+这里的符号大概就是任意字串
+
 ### 2.3.1 引号 Quotation
+
+这里着重强调了引号带来的问题  
+
+"大声说你的名字" | "你的名字" -> "aluneed"  
+"大声说'你的名字'" | "'你的名字'" -> "你的名字"  
+
+重点都在注释中  
+引号破坏了对等的东西可以相互替换的观念, 因此极大损害了根据简单词语在语言中做推理的能力  
+
+这是在说, 本来在形式主义/符号主义的过程中可以进行代换的东西, 由于引号而无法进行代换  
+这可以看做是代数中的变量由于引号的作用而变成了一个字符串类型的值, 因此不再具有能够进行代换的代数性质  
+
+书中说scheme中可以不写结束引号, 但实际上在drRacket中, 写上结束引号反而会引起错误 `read-syntax: expected an element for quoting "'", found end-of-file`  
+
+另外的注释提起了两条语法规则  
+单引号可以用于表示括起的表和符号, 双引号只能用于字符串  
+`'<expression>`是`(quote <expression>)`的语法糖  
+
+由于scheme本身不具有类型, 因此`'<expression>`的类型其实是比较含混的  
+它看上去有点像字串  
+但实际上在语义上表达的是对`'`后方的对象的引用  
+举个例子
+```scheme
+(print "+")  ;;"+"
+(print '+)  ;;+
+(print "abc")  ;;"abc"
+(print abc)  ;;abc: unbound identifier in: abc
+```
+可以看出, `print`打印字串时其实都是带上引号了的  
+从`(print abc)`的错误提示也可以猜测, `'+`的结果实际上是一个identifier, 它代表了求和这个过程  
+
+继续尝试
+```scheme
+(define abc "abc")
+(print abc)  ;;"abc"
+(define (myfunc x) (+ x 1))
+(print myfunc)  ;;#<procedure:myfunc>
+```
+可以看出, `print`会打印出实际引用的东西  
+对`(print '+)`来说, 打印出的`+`可能就是加号所引用的内置shceme过程  
+
+```scheme
+(eq? 1 (car '(1 2 3)))  ;;#t
+(eq? '1 (car '(1 2 3)))  ;;#t
+
+(define abc "abcd")
+(eq? abc abc)  ;;#t
+(eq? abc "abcd")  ;;#t
+
+(define ls '(1 abc "abcd"))
+(eq? ls ls)  ;;#t
+(eq? ls '(1 abc "abcd"))  ;;#f
+(eq? '(1 abc "abcd") '(1 abc "abcd"))  ;;#f
+(eq? '() '())  ;;#t
+(define ls2 ls)
+(eq? ls2 ls)  ;;#t
+```
+
+`eq?`的一系列结果十分令人疑惑, 因为它和注释中的描述表现出不一致的行为  
+大体上来看, 在进行比较时, 会比较符号的引用, 而非符号本身  
+也就是说, `'`类似于取指针/取引用过程, 而进行`eq?`比较时, 可能会比较引用, 也可以能直接将符号代换为引用的内容再进行比较  
+`'(1 abc "abcd")`在构建list之后获取引用, 而两个list虽然内容相同, 但实际引用时不同的, 这也就导致了比较结果为#f  
+从测试来看, `eq?`的行为和java的`==`表现十分相似  
+
+
+
+
+
 ### 2.3.2 实例: 符号求导 Example: Symbolic Differentiation 符号微分
 ### 2.3.3 实例: 集合的表示 Example: Representing Sets
 ### 2.3.4 实例: Huffman编码树 Example: Huffman Encoding Trees
