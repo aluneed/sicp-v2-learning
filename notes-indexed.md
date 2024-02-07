@@ -1141,13 +1141,34 @@ https://stackoverflow.com/questions/7719004/in-scheme-how-do-you-use-lambda-to-c
 也就是说, `'`类似于取指针/取引用过程, 而进行`eq?`比较时, 可能会比较引用, 也可以能直接将符号代换为引用的内容再进行比较  
 `'(1 abc "abcd")`在构建list之后获取引用, 而两个list虽然内容相同, 但实际引用时不同的, 这也就导致了比较结果为#f  
 从测试来看, `eq?`的行为和java的`==`表现十分相似  
-
-
-
-
+甚至连字串和列表的行为也和java类似  
+在对字串进行define之后, `eq?`比较字串和其定义的名称, 结果为#t
+而对一个非空list进行定义后, 比如上面的`'(1 abc "abcd")`, 哪怕看上去一致, 但实际每次写出来都是重新创建了一个list, 可以看做java写了List.of(..)  
 
 ### 2.3.2 实例: 符号求导 Example: Symbolic Differentiation 符号微分
+
+有点懒得做这一小节的练习, 但是又感觉对写parser会有点帮助  
+
+`symbol?`用来判断符号  
+只有简单的标识符才是符号
+```scheme
+(define x 1)
+(symbol? x)  ;#f
+(symbol? 'x)  ;#t
+(define l '(1 2 3))  ;#f
+(symbol? l)  ;#f
+(symbol? 'l)  ;t
+(symbol? '(1 2 3))  ;f
+(symbol? 1)  ;f
+(symbol? '1)  ;f
+(symbol? '())  ;f
+```  
+
 ### 2.3.3 实例: 集合的表示 Example: Representing Sets
+
+这里面虽然讲了集合的实现, 但是不知道是不是最佳实践  
+
+
 ### 2.3.4 实例: Huffman编码树 Example: Huffman Encoding Trees
 ## 2.4 抽象数据的多重表示 Multiple Representations for Abstract Data
 ### 2.4.1 复数的表示 Representations for Complex Numbers

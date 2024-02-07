@@ -1,0 +1,33 @@
+(define (call-the-cops) (begin (display "call-the-cops") (newline)))
+
+(define (make-account balance pwd)
+  (define wrongPwdCount 0)
+  (define (withdraw amount)
+    (if (>= balance amount)
+      (begin (set! balance (- balance amount))
+             amount
+        )
+      "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch inputPwd m)
+    (if (eq? pwd inputPwd)
+      (cond ((eq? m 'withdraw) withdraw)
+        ((eq? m 'deposit) deposit)
+        (deposit balan)
+        (else (error "Unknown request - MAKE-ACCOUNT" m))
+        )
+      (if (>= wrongPwdCount 7)
+        (call-the-cops)
+        ((set! wrongPwdCount (+ 1 wrongPwdCount))(error "Incorrect password"))  ;;感觉写得有点粗暴
+        )
+      )
+    )
+  dispatch
+  )
+
+(define myAccount (make-account 100 'reallysafepassword))
+((myAccount 'reallysafepassword 'withdraw) 40)
+((myAccount 'reallysafepassword 'withdraw) 400)
+((myAccount 'wrongpwd 'deposit) 50)
