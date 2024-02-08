@@ -12,5 +12,5 @@
 后续变动:
 
     DrRacket 8.10
-        语言: 其他语言-大
+        语言: 其他语言-大(pretty big)
     intellij idea with scheme plugin https://plugins.jetbrains.com/plugin/10171-scheme

@@ -1181,7 +1181,66 @@ https://stackoverflow.com/questions/7719004/in-scheme-how-do-you-use-lambda-to-c
 # 3 模块化, 对象和状态 Modularity, Objects, and State
 ## 3.1 赋值和局部状态 Assignment and Local State
 ### 3.1.1 局部状态变量 Local State Variables
+
 ### 3.1.2 引进赋值带来的利益 The Benefits of Introducing Assignment
+
+例子中的`random-update`并不存在  
+找到了一个实现, 但是racket的pretty big并不能使用, 这个仓库用的是chicken scheme  
+https://github.com/klutometis/sicp/blob/master/rand-update.scm  
+最后还是老实直接用`(random)`了  
+https://stackoverflow.com/questions/14674165/scheme-generate-random
+
+示例程序
+```scheme
+(define (rand) (random 1000))
+
+(define (estimate-pi tirals)
+  (sqrt (/ 6 (monte-carlo tirals cesaro-test)))
+  )
+
+(define (cesaro-test)
+  (= (gcd (rand) (rand)) 1)
+  )
+
+(define (monte-carlo trials experiment)
+  (define (iter tirals-remaining trials-passed)
+    (cond
+      ((= tirals-remaining 0) (/ trials-passed trials))
+      ((experiment) (iter (- tirals-remaining 1) (+ trials-passed 1)))
+      (else (iter (- tirals-remaining 1) trials-passed))
+      )
+    )
+  (iter trials 0.0)
+  )
+
+(estimate-pi 100000)
+```
+一开始`(define (rand) (random 100))`, 随机数范围太小, 可能导致gcd的效果不太好, 计算次数加到1m都还是有较大偏离  
+随机数范围加到1000, 计算次数降到100k, 有了更好的结果  
+随机数范围10k, 次数1m时, 基本上能稳到3.14..  试了很多次, 偏差小于千分之二  
+
+练习3.5  
+我写的predicate感觉有点不对味, 至少不像个积分  
+如果是积分的话, 这个predicate应该是和x1,x2相关的, 但这个predicate是手动编写的, 和一个点坐标相关, 并且实际计算的predicate是单位元, 但取点的随机范围却是没有校验的  
+在`estimate-integral`中又不应该对传入的predicate做处理  
+另外这个方法对pi的估计也没有示例中的准确  
+
+练习3.6
+示例中的随机数init和update都不可用, 导致这里没法进行实际测试  
+之前在第二章也是被类似的情况恶心到了, 很多东西(包括示例)根本跑不起来  
+网上的方案是随便写了个东西做模拟  
+```scheme
+(define random-init 0)
+(define (rand-update x) (+ x 1)) ; A not-very-evolved PNRG 
+```
+至于这个练习本身的问题, 不同于3.1.1中总是通过一个make函数构造一个带环境的闭包, 这里rand并不会生成一个对象返回给外部, 而是需要保存于它自身  
+一开始直接`define (rand method)`了, 没想明白  
+关键点在于, 利用lambda x创建一个环境, 然后对这个lambda apply一个初始值  
+然后再写出lambda method捕获环境中的x(带初始值)  
+另一个需要注意的点是, 对lambda x apply初始值, 是仅在`define rand`时调用一次  
+也就是在这时, 创建了一个捕获了带有捕获了x的环境的函数, 然后绑定至rand  
+这也是为什么rand被多次调用之后, x还是会发生改变, 因为调用rand并不会创建新的环境  
+
 ### 3.1.3 引进赋值的代价 The Costs of Introducing Assignment
 ## 3.2 求值的环境模型 The Environment Model of Evaluation
 ### 3.2.1 求值规则 The Rules for Evaluation
