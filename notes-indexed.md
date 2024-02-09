@@ -1013,7 +1013,7 @@ https://zh.wikipedia.org/zh-cn/结合律
 
 `flatmap`无法做到递归地让树形结构扁平化  
 java中也是如此  
-```java
+```jshelllanguage
 Stream<Stream<Stream<String>>> stream = Stream.of(Stream.of(Arrays.asList("test", "hello", "world").stream()));
         stream.flatMap(e -> e)
                 .peek(e -> System.out.println(e))
@@ -1242,6 +1242,25 @@ https://stackoverflow.com/questions/14674165/scheme-generate-random
 这也是为什么rand被多次调用之后, x还是会发生改变, 因为调用rand并不会创建新的环境  
 
 ### 3.1.3 引进赋值的代价 The Costs of Introducing Assignment
+
+练习3.7  
+这个练习让我想起一个以前就遇到过的问题: 一大段问题描述中没有定义好接口, 也没有给出测试, 
+导致需要花很多精力去构思最终实现出来的东西应该长什么样, 有什么样的shape  
+当然这个练习本身描述的没多复杂, 也给出了一个make-joint的使用示例  
+但也存在一些没有澄清的要求: 新的密码是否能用于继续创建关联账户? 密码和账户是否必须匹配(这是无法实现的, 因为参数中并没有传入新的用户名)?  
+题目给的需求本身用scheme写起来也很傻逼, 也难怪工业界语言都是oop语言  
+练习本身的问题在于, 是否创建一个新的对象, 如果创建了, 如何共享状态; 另一个方案则是加入一个合法的密码列表  
+
+踩坑: 创建list时直接用`'(pwd)`形参, 有问题, `'()`中的所有identifier都会作为原始形式  
+(cons pwd '())是对的, `(,pwd)也是对的, (list pwd)也是对的  
+
+练习3.8
+这个问题本身很简单, 随手构造一个就完事了  
+但是"构造f"这个过程, 特别像约束求解(f即约束), 跟ml也有共同之处  
+坑: 测试用的(f 0)和(f 1)会影响后续的结果  
+并且`(+ (f 0) (f 1))`会影响`(+ (f 1) (f 0))`的结果, 因此测试中也交换了顺序  
+只要观测就会导致结果改变, 听着就很耳熟  
+
 ## 3.2 求值的环境模型 The Environment Model of Evaluation
 ### 3.2.1 求值规则 The Rules for Evaluation
 ### 3.2.2 简单过程的应用 Applying Simple Procedures

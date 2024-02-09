@@ -2,7 +2,7 @@
   (define (withdraw amount)
     (if (>= balance amount)
       (begin (set! balance (- balance amount))
-             amount
+             balance
         )
       "Insufficient funds"))
   (define (deposit amount)
@@ -12,7 +12,6 @@
     (if (eq? pwd inputPwd)
       (cond ((eq? m 'withdraw) withdraw)
         ((eq? m 'deposit) deposit)
-        (deposit balan)
         (else (error "Unknown request - MAKE-ACCOUNT" m))
         )
       (error "Incorrect password")
