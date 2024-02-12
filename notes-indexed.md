@@ -1332,6 +1332,14 @@ p170的注释提到了, 不同的对象是否共享过程代码取决于实现
 `((acc 'withdraw) 60)`  
 类似deposit, 没啥好说的  
 
+acc的局部状态保存在哪? E1环境中  
+如果acc这个引用没了(也就是make-account创建的对象), E1环境可能被GC回收, 不知道drRacket具体是怎么实现的  
+局部状态如何保持不同?  
+acc2指向的是通过另一次make-account调用创建的环境中的dispatch, 位于另一个环境E2中  
+哪些部分共享?  
+相同的过程是否在物理上共享取决于实现(参考p170的注释)  
+大体上`eq?`这样的全局过程都是共享的, if/cond/define这类也是共享的, 可能直接由解释器实现或者用宏实现  
+
 ## 3.3 通过变动数据建模 Modeling with Mutable Data 用变动数据做模拟
 ### 3.3.1 变动的表结构 Mutable List Structure
 ### 3.3.2 队列的表示 Representing Queues
