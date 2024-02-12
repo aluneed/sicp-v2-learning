@@ -1262,10 +1262,76 @@ https://stackoverflow.com/questions/14674165/scheme-generate-random
 只要观测就会导致结果改变, 听着就很耳熟  
 
 ## 3.2 求值的环境模型 The Environment Model of Evaluation
+
+要点:  
+通过lambda捕获环境变量创建闭包以保存状态  
+
 ### 3.2.1 求值规则 The Rules for Evaluation
 ### 3.2.2 简单过程的应用 Applying Simple Procedures
+
+练习3.9
+递归版本:  
+全局环境中创建了factorial和一个lambda的绑定  
+这里factorial并没有进行尾递归优化  
+因此每次递归调用都会创建一个新的栈帧, 直到最后n=1时开始返回  
+但每个栈帧Fn的环境En, 都是直接引用global环境的, En之间并没有引用关系  
+迭代版本:  
+看着就很复杂. factorial和fact-iter被定义在global环境中  
+调用(factorial n)会创建一个新的栈帧以构成新的环境E1, 然后在新的栈帧中查找fact-iter, 找不到, 于是继续去global环境中找  
+找到之后调用(fact-iter 1 1 n), 这会创建一个新的栈帧以构成新的环境E2  
+E2中会继续调用(fact-iter newParams), 这构成了尾递归, 会进行优化  
+所以它后续的调用中构成的栈帧应该并不会堆叠在第一次进行fact-iter调用以构成E2环境的栈帧后面, 而是替换掉这个栈帧,  
+在环境上也会不断构造新的平行于E2的, 直接引用global环境的新的环境  
+此外, 从E2~En的环境也都直接引用global, 并不会引用E1
+
+要点在于: 环境和栈帧的结构并不是一一对应的  
+这会导致一些猜想
+应用一个过程时的环境可以有两种取法: 一是取过程定义时捕获的环境(即lambda捕获的闭包), 二是取过程调用时的栈帧?  
+这是不是分别代表着所谓的静态作用域和动态作用域的根本差异?
+
 ### 3.2.3 框架作为局部状态的仓库 Frames as the Repository of Local State 将框架看作局部状态的展台
+
+p170的注释提到了, 不同的对象是否共享过程代码取决于实现  
+
+练习3.10  
+行为当然是相同的, 环境有所差异  
+```scheme
+(define (make-withdraw balance)
+  (lambda (amount)
+    (if (>= balance amount)
+        (begin (set! balance (- balance amount)) balance)
+        "Insufficient funds!"
+        )
+    )
+  )
+(define (make-withdraw balance)
+  ((lambda (balance)
+    (lambda (amount)
+      (if (>= balance amount)
+        (begin (set! balance (- balance amount)) balance)
+        "Insufficient funds!"
+        )
+      )
+    ) balance)  
+  )
+```
+第一种只有一个显示lambda, 直接捕获了make-withdraw传入的形参balance(在调用make-withdraw时会创建这个环境并捕获形参)  
+第二种是let脱糖后的实际过程, 通过lambda balance手动创建了一个新的环境, 然后内层的lambda amount捕获了这个创建的环境中的balance,
+调用make-withdraw时, 会将lambda balance应用于传入的参数balance, 然后构造新的环境, 多了一组通过lambda创建环境以提供形参然后apply lambda以提供形参的操作  
+实际上给define脱糖就可以发现, 第二种再进行一次let是没必要的  
+当然这也是在"balance"这个参数进行值传递的情况(which在scheme和java中总是如此)  
+
 ### 3.2.4 内部定义 Internal Definitions
+
+练习3.11
+`(define acc (make-account 50))`  
+在全局环境中通过`(make-account 50)`创建了一个环境E1, 在其中定义了一系列过程, 并将其中一个过程dispatch返回, 和acc绑定  
+`((acc 'deposit) 40)`  
+在全局环境中通过acc取得了绑定的E1环境中的dispatch过程, 然后调用dispatch过程, 返回了E1中的deposit过程, 这个调用是在E1环境中进行的  
+最后在E1环境中应用(deposit 40)  
+`((acc 'withdraw) 60)`  
+类似deposit, 没啥好说的  
+
 ## 3.3 通过变动数据建模 Modeling with Mutable Data 用变动数据做模拟
 ### 3.3.1 变动的表结构 Mutable List Structure
 ### 3.3.2 队列的表示 Representing Queues
